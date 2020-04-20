@@ -1,26 +1,15 @@
 package org.thoth.rsa;
 
 import java.io.InputStream;
-import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Properties;
 import javax.crypto.Cipher;
 
 public class Main {
-
-    private static KeyFactory keyFactory;
-
-    public static KeyFactory getKeyFactory() throws Exception {
-        if (keyFactory == null) {
-            keyFactory = KeyFactory.getInstance("RSA");
-        }
-        return keyFactory;
-    }
 
     private static PublicKey publicKey;
 
@@ -59,42 +48,6 @@ public class Main {
         return publicKey;
     }
 
-    private static PrivateKey privateKey;
-
-    public static PrivateKey getPrivateKey() throws Exception {
-        if (privateKey == null) {
-            String resource = "./private_key_rsa_4096_pkcs8.pem";
-            //System.out.printf("Resource = \"%s\"%n", resource);
-
-            InputStream is = Main.class.getClassLoader().getResourceAsStream(resource);
-            //System.out.printf("InputStream = %s%n", is.toString());
-
-            byte[] bytes = is.readAllBytes();
-            //System.out.printf("bytes.length = %d%n", bytes.length);
-
-            String stringBefore = new String(bytes);
-            //System.out.printf("stringBefore = \"%s\"%n", stringBefore);
-
-            String stringAfter = stringBefore
-                .replaceAll("\\n", "")
-                .replaceAll("-----BEGIN PRIVATE KEY-----", "")
-                .replaceAll("-----BEGIN RSA PRIVATE KEY-----", "")
-                .replaceAll("-----END PRIVATE KEY-----", "")
-                .replaceAll("-----END RSA PRIVATE KEY-----", "")
-                .trim();
-            //System.out.printf("stringAfter = \"%s\"%n", stringAfter);
-
-            byte[] decoded = Base64.getDecoder().decode(stringAfter);
-            //System.out.printf("decoded.length = %d%n", decoded.length);
-
-            KeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
-            //System.out.printf("keySpec = %s%n", keySpec.toString());
-
-            privateKey = getKeyFactory().generatePrivate(keySpec);
-            //System.out.printf("privateKey = %s%n", privateKey.toString());
-        }
-        return privateKey;
-    }
 
     public static String getAlgorithm() {
         return "RSA";
@@ -134,14 +87,14 @@ public class Main {
             outprop("app2.properties");
 
             outdat("2010.dat");
-            
+
             outprop("app3.properties");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public static void outprop(String filename) throws Exception {
         System.out.printf("%n%n");
         Properties properties = new Properties();
@@ -150,8 +103,8 @@ public class Main {
         String decryptedPassword = decrypt(Base64.getDecoder().decode(base64Password), privateKey);
         System.out.printf("%s decryptedPassword = \"%s\" %n", filename, decryptedPassword);
     }
-    
-    
+
+
     public static void outdat(String filename) throws Exception {
         System.out.printf("%n%n");
         final byte[] base64EncodedBytes = getFile("./" + filename);
@@ -230,7 +183,7 @@ public class Main {
     /**
      * <p>
      * NOTE: This code is from Jakarta commons lang</p>
-     * 
+     *
      * <p>
      * Removes one newline from end of a String if it's there, otherwise leave
      * it alone. A newline is &quot;{@code \n}&quot;, &quot;{@code \r}&quot;, or

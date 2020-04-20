@@ -31,10 +31,10 @@ create files in PKCS#8 format \[4\]. Probably better to just use openssl \[2, 5\
 #openssl genrsa -out private_key_rsa_4096_pkcs1.pem 4096
 
 # Export private key to pkcs8 format
-#openssl pkcs8 -topk8 -in private_key_rsa_4096_pkcs1.pem -inform pem -out private_key_rsa_4096_pkcs8.pem -outform pem -nocrypt
+#openssl pkcs8 -topk8 -in private_key_rsa_4096_pkcs1.pem -inform pem -out private_key_rsa_4096_pkcs8-exported.pem -outform pem -nocrypt
 
 # Generate private key in pkcs8 format
-openssl genpkey -out private_key_rsa_4096_pkcs8.pem -algorithm RSA -pkeyopt rsa_keygen_bits:4096
+openssl genpkey -out private_key_rsa_4096_pkcs8-generated.pem -algorithm RSA -pkeyopt rsa_keygen_bits:4096
 
 # Export public key in pkcs8 format
 openssl rsa -pubout -outform pem -in private_key_rsa_4096_pkcs8.pem -out public_key_rsa_4096_pkcs8.pem
