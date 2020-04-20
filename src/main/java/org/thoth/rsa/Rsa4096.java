@@ -75,7 +75,8 @@ public class Rsa4096 {
             .replaceAll("\\n", "")
             .replaceAll("-----BEGIN PUBLIC KEY-----", "")
             .replaceAll("-----END PUBLIC KEY-----", "")
-            .trim();
+            .trim()
+        ;
 
         byte[] decoded = Base64
             .getDecoder()
@@ -101,12 +102,14 @@ public class Rsa4096 {
         return encoded;
     }
 
-    public String decryptFromBase64(String encryptedAndEncoded) {
+    public String decryptFromBase64(String base64EncodedEncryptedBytes) {
         String plainText = null;
         try {
             final Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] decoded = Base64.getDecoder().decode(encryptedAndEncoded);
+            byte[] decoded = Base64
+                .getDecoder()
+                .decode(base64EncodedEncryptedBytes);
             byte[] decrypted = cipher.doFinal(decoded);
             plainText = new String(decrypted);
         } catch (Exception ex) {

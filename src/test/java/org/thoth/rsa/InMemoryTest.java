@@ -15,7 +15,8 @@ public class InMemoryTest {
     }
 
     @Test
-    public void read_pkcs8_private_key_exported_from_pkcs1_key() throws Exception
+    public void test_in_memory_encryption_decryption()
+    throws Exception
     {
         // Setup
         Rsa4096 rsa = new Rsa4096(
