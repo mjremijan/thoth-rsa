@@ -42,6 +42,7 @@ public class Rsa4096 {
 
         String stringBefore
             = new String(is.readAllBytes());
+        is.close();
 
         String stringAfter = stringBefore
             .replaceAll("\\n", "")
@@ -70,7 +71,8 @@ public class Rsa4096 {
 
         String stringBefore
             = new String(is.readAllBytes());
-
+        is.close();
+        
         String stringAfter = stringBefore
             .replaceAll("\\n", "")
             .replaceAll("-----BEGIN PUBLIC KEY-----", "")
