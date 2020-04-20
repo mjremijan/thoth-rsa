@@ -1,52 +1,12 @@
 package org.thoth.rsa;
 
 import java.io.InputStream;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.KeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Properties;
-import javax.crypto.Cipher;
 
 public class Main {
 
-    private static PublicKey publicKey;
 
-    public static PublicKey getPublicKey() throws Exception {
-        if (publicKey == null) {
-            String resource = "./public_key_rsa_4096_pkcs8.pem";
-            //System.out.printf("Resource = \"%s\"%n", resource);
-
-            InputStream is = Main.class.getClassLoader().getResourceAsStream(resource);
-            //System.out.printf("InputStream = %s%n", is.toString());
-
-            byte[] bytes = is.readAllBytes();
-            //System.out.printf("bytes.length = %d%n", bytes.length);
-
-            String stringBefore = new String(bytes);
-            //System.out.printf("stringBefore = \"%s\"%n", stringBefore);
-
-            String stringAfter = stringBefore
-                .replaceAll("\\n", "")
-                .replaceAll("-----BEGIN PUBLIC KEY-----", "")
-                .replaceAll("-----BEGIN RSA PUBLIC KEY-----", "")
-                .replaceAll("-----END PUBLIC KEY-----", "")
-                .replaceAll("-----END RSA PUBLIC KEY-----", "")
-                .trim();
-            //System.out.printf("stringAfter = \"%s\"%n", stringAfter);
-
-            byte[] decoded = Base64.getDecoder().decode(stringAfter);
-            //System.out.printf("decoded.length = %d%n", decoded.length);
-
-            KeySpec keySpec = new X509EncodedKeySpec(decoded);
-            //System.out.printf("keySpec = %s%n", keySpec.toString());
-
-            publicKey = getKeyFactory().generatePublic(keySpec);
-            //System.out.printf("publicKey = %s%n", publicKey.toString());
-        }
-        return publicKey;
-    }
 
 
     public static String getAlgorithm() {
@@ -59,14 +19,6 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            final String originalText = "Text to be encrypted ";
-
-            // Encrypt the string using the public key
-            final PublicKey publicKey = getPublicKey();
-            final byte[] cipherText = encrypt(originalText, publicKey);
-
-            // Decrypt the cipher text using the private key.
-            final PrivateKey privateKey = getPrivateKey();
             final String plainText = decrypt(cipherText, privateKey);
 
             // Printing the Original, Encrypted and Decrypted Text
@@ -127,27 +79,7 @@ public class Main {
         return bytes;
     }
 
-    /**
-     * Encrypt the plain text using public key.
-     *
-     * @param text : original plain text
-     * @param key :The public key
-     * @return Encrypted text
-     * @throws java.lang.Exception
-     */
-    public static byte[] encrypt(String text, PublicKey key) {
-        byte[] cipherText = null;
-        try {
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance(getAlgorithm());
-            // encrypt the plain text using the public key
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            cipherText = cipher.doFinal(text.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cipherText;
-    }
+
 
     /**
      * Decrypt text using private key.
@@ -157,25 +89,7 @@ public class Main {
      * @return plain text
      * @throws java.lang.Exception
      */
-    public static String decrypt(byte[] text, PrivateKey key) {
-        byte[] dectyptedText = null;
-        try {
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance(getAlgorithm());
 
-            // decrypt the text using the private key
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            dectyptedText = cipher.doFinal(text);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        String s = new String(dectyptedText);
-
-        // remove last newline characters if they exist
-        return chomp(s);
-    }
 
     public static final char LF = '\n';
     public static final char CR = '\r';
