@@ -34,13 +34,13 @@ public class EncryptedFileTest {
         // Test
         String actual
             = rsa.decryptFromBase64(encryptedAndEncoded);
-        System.out.printf("%s%n", actual);
 
         // Assert
         Assertions.assertEquals(expected, actual);
     }
 
-    public String getFileAsString(String classPathResourceLocation) throws Exception {
+    public String getFileAsString(String classPathResourceLocation)
+    throws Exception {
         InputStream is = this
             .getClass()
             .getClassLoader()
